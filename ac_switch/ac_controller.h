@@ -15,6 +15,8 @@ public:
     ac_controller(int, unsigned int*, byte*);
     ac_controller();
     phase_controller* getSwitches();
+    void updateLevel(byte, byte);
+    void status();
 };
 
 

@@ -1,0 +1,6 @@
+{
+    "configuration": "cpu=atmega328old",
+    "board": "arduino:avr:nano",
+    "sketch": "ac_switch.ino",
+    "port": "COM14"
+}
