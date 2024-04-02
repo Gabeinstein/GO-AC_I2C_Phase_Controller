@@ -19,7 +19,8 @@ public:
     void setLevel(byte);
     byte getRawValue();
     unsigned int get_phase_comparator();
-    byte getAddress();    
+    byte getAddress();   
+    int getPin(); 
 };
 
 

@@ -17,6 +17,7 @@ public:
     phase_controller* getSwitches();
     void updateLevel(byte, byte);
     void status();
+    int getNumSwitches();
 };
 
 

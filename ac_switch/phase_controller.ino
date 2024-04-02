@@ -24,7 +24,7 @@ phase_controller::phase_controller(int _digital_pin, byte _address)
 }
 void phase_controller::setLevel(byte _level_raw){
     level_raw = _level_raw;
-    phase_comparator = map(level_raw,0,255,0,16667);    //120Hz Timer Counter
+    phase_comparator = map(level_raw,0,255,0,83);    //120Hz Timer Counter
 }
 void phase_controller::setAddress(byte _address){
   address = _address;
@@ -40,4 +40,7 @@ byte phase_controller::getAddress(){
 }
 byte phase_controller::getRawValue(){
     return level_raw;
+}
+int phase_controller::getPin(){
+    return digital_pin;
 }

@@ -1,32 +1,27 @@
 #include "ac_controller.h"
 #include <Wire.h>
+#include <TimerOne.h>
 
 ac_controller controller1;
 
-volatile int counter = 0;
+volatile unsigned int counter = 0;
 volatile bool isZeroCross = 0;
-volatile unsigned int current_capture = 0;
+
 
 void setup(){
     Wire.begin(0x10);
     Wire.onReceive(i2c_receive_event);
     Serial.begin(9600);
-
+    pinMode(controller1.getSwitches()[0].getPin(),OUTPUT);
     //Timer interrupts;
-    attachInterrupt(0,ISR_ZERO_CROSSING,RISING);
-    noInterrupts();
-    TCCR2A = 0; TCCR2B = 0;
-    TCNT2 = 0;
-    TCCR2B |= 0b00001101;
-    OCR2A = 130;
-    TIMSK2 |= 0b00000010;
-    interrupts();
+    attachInterrupt(0, ZeroCrossingFunction, RISING);
+    Timer1.initialize(100);     //100us
+    Timer1.attachInterrupt(Dimming_control, 100);        
 }
 void loop(){
     //controller1.status();
     //Serial.println(controller1.getSwitches()[0].getAddress());
-    Serial.println(counter);
-    //delay(500);
+    //Serial.println(counter);
 }
 void i2c_receive_event(int howMany){
     byte address_from_master = Wire.read();
@@ -35,19 +30,22 @@ void i2c_receive_event(int howMany){
     //Serial.println(level_raw_value);
     controller1.updateLevel(address_from_master,level_raw_value);
 }
-void ISR_ZERO_CROSSING(){
-    isZeroCross = true;
+void ZeroCrossingFunction(){
     counter = 0;
-    digitalWrite(LED_BUILTIN,LOW);
-}
-ISR(TIMER2_COMPA_vect){
-    if (isZeroCross == true){
-        if (counter >= 65){     //130 es 120Hz
-            digitalWrite(LED_BUILTIN,HIGH);
-            counter = 0;
-            isZeroCross = false;
-        }else{
-            counter ++;
-        }
+    isZeroCross = true;
+    for(int i=0; i < controller1.getNumSwitches(); i++){
+        digitalWrite(controller1.getSwitches()[i].getPin(),LOW);
     }
 }
+void Dimming_control(){
+    if(isZeroCross == true){
+        for (int i = 0; i < controller1.getNumSwitches(); i++){
+            if (counter >= controller1.getSwitches()[i].get_phase_comparator()){
+                digitalWrite(controller1.getSwitches()[i].getPin(),HIGH);
+            }
+        }
+        counter++;
+    } 
+}
+
+

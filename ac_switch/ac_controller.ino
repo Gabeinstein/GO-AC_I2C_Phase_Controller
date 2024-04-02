@@ -50,3 +50,6 @@ void ac_controller::status(){
     Serial.println("-------------- END ---------------");
     
 }
+int ac_controller::getNumSwitches(){
+    return n_switches;
+}
