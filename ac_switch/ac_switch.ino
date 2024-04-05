@@ -13,13 +13,15 @@ void setup(){
     Wire.onReceive(i2c_receive_event);
     Serial.begin(9600);
     pinMode(controller1.getSwitches()[0].getPin(),OUTPUT);
+    pinMode(controller1.getSwitches()[1].getPin(),OUTPUT);
+    pinMode(controller1.getSwitches()[2].getPin(),OUTPUT);
     //Timer interrupts;
     attachInterrupt(0, ZeroCrossingFunction, RISING);
     Timer1.initialize(100);     //100us
     Timer1.attachInterrupt(Dimming_control, 100);        
 }
 void loop(){
-    //controller1.status();
+    controller1.status();
     //Serial.println(controller1.getSwitches()[0].getAddress());
     //Serial.println(counter);
 }
